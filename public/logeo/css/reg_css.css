@@ -1,0 +1,88 @@
+.contenedor {
+    display: grid;
+    grid-template-areas: 
+        "head "
+        "main"
+        "footer ";
+    grid-template-rows: auto 1fr auto; /* El contenido principal ocupa el espacio restante */
+    gap: 5px;
+    background-color: #f0f0f0;
+    height: 100%;
+}
+    
+/* HEADER */
+header {
+    grid-area: head;
+    background: rgb(243, 11, 127);
+    color: rgb(247, 248, 248);
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 20px;
+    height: 80px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.solicitud{
+background-color: rgb(31,54,74);
+
+ color: #f0f0f0;
+ text-align: center;
+}
+
+/* SECTION (BARRA LATERAL) */
+section {
+    grid-area: barra;
+    background-color: rgb(184);
+    color: rgb(1, 12, 12);
+    text-align: center;
+    padding: 20px;
+    overflow: auto;
+}
+
+
+/* MAIN */
+main {
+    grid-area: main;
+   background-color: rgb(172, 207, 236);
+
+    color: black;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    padding: 20px;
+    overflow: auto;
+    
+}
+
+/* FOOTER */
+footer {
+    grid-area: footer;
+    background-color: rgb(31,54,74);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* RESPONSIVE DESIGN: móviles pequeños */
+@media (max-width: 576px) {
+    .contenedor {
+        grid-template-areas: 
+            "head"
+            "main"
+            "footer";
+        grid-template-columns: 1fr;
+    }
+
+    section {
+        display: none;
+    }
+
+    main {
+        height: auto; /* Evita que main ocupe toda la pantalla si section desaparece */
+    }
+}
