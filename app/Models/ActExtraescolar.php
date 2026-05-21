@@ -9,18 +9,37 @@ class ActExtraescolar extends Model
 {
     use HasFactory;
 
-    protected $table = 'Act_extraesc'; // Nombre real de tu tabla
+    protected $table = 'Act_extraesc'; 
 
-    protected $primaryKey = 'id_act'; // Llave primaria correcta
+    protected $primaryKey = 'id_act';
 
-    public $timestamps = false; // Si la tabla no tiene created_at / updated_at
+    public $timestamps = false;
 
     protected $fillable = [
         'nombre',
         'activo',
+        'horario',
+        'lugar',
+        'materiales',
+        'cupo_masculino',
+        'cupo_femenino',
+        'no_empleado',
+        'inscripcion_abierta',
+        'parcial1_cerrado',
+        'parcial2_cerrado',
+        'parcial3_cerrado',
     ];
 
-    // 🔥 Importante: permite que las rutas resource usen id_tipo
+    public function docente()
+    {
+        return $this->belongsTo(Docente::class, 'no_empleado', 'no_empleado');
+    }
+
+    public function usuarios()
+    {
+        return $this->hasMany(Usuario::class, 'actividad_extraescolar', 'id_act');
+    }
+
     public function getRouteKeyName()
     {
         return 'id_act';

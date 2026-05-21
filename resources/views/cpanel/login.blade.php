@@ -140,11 +140,10 @@
         <form method="POST" action="{{ route('login.post') }}">
             @csrf
             
-            <!-- Campo Correo con Validación Regex Solicitada -->
+            <!-- Campo Correo (Sin patrón estricto para permitir admin) -->
             <div class="input-group-custom">
                 <i class="mdi mdi-email-outline"></i>
-                <input type="text" name="correo" placeholder="Correo institucional" required 
-                       pattern="^[a-zA-Z0-9_.-]{8}@[a-z]{7}\.[a-z]{5}\.[a-z]{2}$" 
+                <input type="text" name="correo" placeholder="Correo institucional o Usuario" required 
                        title="Ejemplo: i2224002@smartin.tecnm.mx"
                        value="{{ old('correo') }}">
             </div>

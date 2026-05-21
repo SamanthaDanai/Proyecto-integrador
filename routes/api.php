@@ -14,6 +14,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+use App\Http\Controllers\Api\QRController;
+
+// Ruta pública para obtener el token
+Route::post('/login', [QRController::class, 'login']);
+
+// Rutas protegidas por token (Sanctum)
+Route::middleware('auth:sanctum')->group(function () {
+    
+    // Ruta para generar el QR
+    Route::get('/generar-qr', [QRController::class, 'generarQR']);
+
+    // Ruta de prueba por defecto
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });

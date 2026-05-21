@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Actividades Extraescolares - ITSSMT</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
@@ -43,12 +44,57 @@
         .sidebar .nav-link.active { background: rgba(31, 54, 74, 0.6); backdrop-filter: blur(10px); color: var(--color-white); font-weight: 600; border-left: none; box-shadow: 0 8px 20px rgba(0,0,0,0.15), inset 3px 0 0 var(--color-green); margin-left: 0.85rem; padding-left: 1.25rem; }
         .sidebar .nav-link.active i { color: var(--color-green); filter: drop-shadow(0 0 5px rgba(184, 214, 122, 0.5)); opacity: 1;}
 
-        /* Títulos de Categoría Neón sutil */
-        .sidebar-heading { font-size: 0.9rem; font-weight: 700; color: var(--color-green); text-transform: uppercase; letter-spacing: 1px; margin-top: 2.2rem; margin-bottom: 1rem; padding: 0 1.5rem; display: flex; align-items: center; opacity: 1; }
-        .sidebar-heading::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(184,214,122,0.4) 0%, transparent 100%); margin-left: 1rem; }
+        /* Títulos de Categoría Neón sutil - Mejorados */
+        .sidebar-heading { 
+            font-size: 1rem; 
+            font-weight: 800; 
+            color: var(--color-green); 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.2rem; 
+            padding: 0 1.5rem; 
+            display: flex; 
+            align-items: center; 
+            opacity: 1; 
+        }
+        .sidebar-heading::after { 
+            content: ''; 
+            flex: 1; 
+            height: 2px; 
+            background: linear-gradient(90deg, rgba(184,214,122,0.6) 0%, transparent 100%); 
+            margin-left: 1rem; 
+        }
 
-        /* Contenido Principal */
-        .main-content { min-height: calc(100vh - 60px); padding: 2rem; }
+        /* Estilos Globales de Formulario para Alta Claridad */
+        .form-label {
+            color: var(--color-navy) !important;
+            font-weight: 700 !important;
+            font-size: 1rem !important;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e2e8f0 !important;
+            background-color: #ffffff !important;
+            border-radius: 12px !important;
+            padding: 0.8rem 1rem !important;
+            font-weight: 500 !important;
+            color: var(--color-navy) !important;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--color-teal) !important;
+            box-shadow: 0 0 0 4px rgba(56, 97, 115, 0.1) !important;
+            background-color: #f8fafc !important;
+        }
+
+        .form-text {
+            color: #475569 !important;
+            font-weight: 600 !important;
+            font-size: 0.9rem !important;
+        }
         
         @media (max-width: 768px) {
             .institute-name-full { display: none; }
@@ -111,15 +157,21 @@
     <div class="container-fluid" style="padding-top: 65px;">
         <div class="row">
             
-            <!-- Barra Lateral (Sidebar) -->
+            <!-- Barra Lateral (Sidebar) - Solo para Administradores -->
+            @if(Auth::user()->id_tipo == 1)
             <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse position-fixed pt-3 h-100 overflow-auto pb-5">
                 
                 <ul class="nav flex-column gap-1 px-2">
                     
                     <h6 class="sidebar-heading">Principal</h6>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('resumen') ? 'active' : '' }}" href="{{ route('resumen') }}">
-                            <i class="mdi mdi-view-dashboard"></i> Resumen (Dashboard)
+                        <a class="nav-link {{ request()->routeIs('resumen') && str_starts_with(request()->query('periodo', ''), 'Enero') ? 'active' : '' }}" href="{{ route('resumen', ['periodo' => 'Enero-junio 2025']) }}">
+                            <i class="mdi mdi-view-dashboard-outline"></i> Dashboard Periodo 1
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('resumen') && str_starts_with(request()->query('periodo', ''), 'Agosto') ? 'active' : '' }}" href="{{ route('resumen', ['periodo' => 'Agosto-diciembre 2024']) }}">
+                            <i class="mdi mdi-view-dashboard"></i> Dashboard Periodo 2
                         </a>
                     </li>
                     <li class="nav-item">
@@ -128,11 +180,24 @@
                         </a>
                     </li>
 
-                    <h6 class="sidebar-heading">Catálogos y Registros</h6>
+                    <h6 class="sidebar-heading">Personal y Seguridad</h6>
                     
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('administradores.*') ? 'active' : '' }}" href="{{ route('administradores.index') }}">
+                            <i class="mdi mdi-account-shield"></i> Administradores
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('docentes.*') ? 'active' : '' }}" href="{{ route('docentes.index') }}">
                             <i class="mdi mdi-teach"></i> Docentes
+                        </a>
+                    </li>
+
+                    <h6 class="sidebar-heading">Control Escolar</h6>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" href="{{ route('usuarios.index') }}">
+                            <i class="mdi mdi-account-group"></i> Estudiantes
                         </a>
                     </li>
                     <li class="nav-item">
@@ -141,22 +206,23 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}" href="{{ route('usuarios.index') }}">
-                            <i class="mdi mdi-account-group"></i> Estudiantes / Usuarios
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('tipousuarios.*') ? 'active' : '' }}" href="{{ route('tipousuarios.index') }}">
-                            <i class="mdi mdi-account-card-details"></i> Tipos de Usuario
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('actextraescolar.*') ? 'active' : '' }}" href="{{ route('actextraescolar.index') }}">
                             <i class="mdi mdi-calendar-check"></i> Actividades Extraesc.
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('actividades.*') ? 'active' : '' }}" href="{{ route('actividades.index') }}">
+                            <i class="mdi mdi-map-marker-radius"></i> Gestión de Eventos
+                        </a>
+                    </li>
 
-                    <h6 class="sidebar-heading">Documentos</h6>
+                    <h6 class="sidebar-heading">Documentos Oficiales</h6>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('constancias.*') ? 'active' : '' }}" href="{{ route('constancias.index') }}">
+                            <i class="mdi mdi-certificate"></i> Expedir Constancias
+                        </a>
+                    </li>
                     
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0)" onclick="exportarUsuariosPDF()">
@@ -170,9 +236,10 @@
                     </li>
                 </ul>
             </nav>
+            @endif
 
             <!-- Contenido Principal -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 main-content bg-light">
+            <main class="{{ Auth::user()->id_tipo == 1 ? 'col-md-9 ms-sm-auto col-lg-10' : 'col-12' }} main-content bg-light">
                 
                 <!-- Encabezado de la Sección -->
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4 border-bottom pb-2">
@@ -286,5 +353,9 @@
     </script>
 
     @stack('scripts')
+
+    {{-- Chatbot Asistente Virtual --}}
+    @include('cpanel.partials.chatbot')
+
 </body>
 </html>

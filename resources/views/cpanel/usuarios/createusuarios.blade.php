@@ -18,7 +18,10 @@
 
                         <div class="col-md-6 mb-3">
                             <label>Número de control</label>
-                            <input type="text" class="form-control" name="num_control" required>
+                            <input type="text" class="form-control @error('num_control') is-invalid @enderror" name="num_control" value="{{ old('num_control') }}" required>
+                            @error('num_control')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -56,59 +59,57 @@
 
                         <div class="col-md-4 mb-3">
                             <label>Correo institucional</label>
-                            <input type="email" class="form-control" name="correo_inst" required>
+                            <input type="email" class="form-control @error('correo_inst') is-invalid @enderror" name="correo_inst" value="{{ old('correo_inst') }}" pattern="^[A-Za-z][0-9]{8}@smartin\.tecnm\.mx$" title="El correo debe tener el formato: una letra, 8 números y @smartin.tecnm.mx (ej. l22240029@smartin.tecnm.mx)" required>
+                            @error('correo_inst')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label>Carrera</label>
                             <select class="form-select" name="carrera" required>
                                 <option value="">Selecciona carrera</option>
-                                <option value="ISC">ISC</option>
-                                <option value="Electromecánica">Electromecánica</option>
-                                <option value="Industrial">Industrial</option>
-                                <option value="IGE">IGE</option>
-                                <option value="Ambiental">Ambiental</option>
-                                <option value="Contador">Contador</option>
-                                <option value="Turismo">Turismo</option>
+                                @foreach($carreras as $carrera)
+                                    <option value="{{ $carrera->nombre_carrera }}">{{ $carrera->nombre_carrera }}</option>
+                                @endforeach
                             </select>
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label>Generación</label>
-                            <input type="text" class="form-control" name="generacion">
+                            <label class="form-label fw-semibold">Periodo Académico *</label>
+                            <select class="form-select" name="generacion" required>
+                                <option value="">Selecciona Periodo Académico</option>
+                                <optgroup label="Periodo 1 (Enero - Junio)">
+                                    <option value="Enero-junio 2025" {{ old('generacion') == 'Enero-junio 2025' ? 'selected' : '' }}>Enero - Junio 2025</option>
+                                    <option value="Enero-junio 2026" {{ old('generacion') == 'Enero-junio 2026' ? 'selected' : '' }}>Enero - Junio 2026</option>
+                                    <option value="Enero-junio 2027" {{ old('generacion') == 'Enero-junio 2027' ? 'selected' : '' }}>Enero - Junio 2027</option>
+                                </optgroup>
+                                <optgroup label="Periodo 2 (Agosto - Diciembre)">
+                                    <option value="Agosto-diciembre 2024" {{ old('generacion') == 'Agosto-diciembre 2024' ? 'selected' : '' }}>Agosto - Diciembre 2024</option>
+                                    <option value="Agosto-diciembre 2025" {{ old('generacion') == 'Agosto-diciembre 2025' ? 'selected' : '' }}>Agosto - Diciembre 2025</option>
+                                    <option value="Agosto-diciembre 2026" {{ old('generacion') == 'Agosto-diciembre 2026' ? 'selected' : '' }}>Agosto - Diciembre 2026</option>
+                                </optgroup>
+                            </select>
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label>Actividad extraescolar</label>
                             <select class="form-select" name="actividad_extraescolar">
                                 <option value="">Selecciona actividad</option>
-                                <option value="1">Escolta</option>
-                                <option value="2">Banderolas</option>
-                                <option value="3">Danza folclórica</option>
-                                <option value="4">Bailes latinos</option>
-                                <option value="5">Rondalla</option>
-                                <option value="6">Arcilla</option>
-                                <option value="7">Basquetbol</option>
-                                <option value="8">Futbol</option>
-                                <option value="9">Atletismo</option>
-                                <option value="10">Volibol</option>
-                                <option value="11">Beisbol</option>
-                                <option value="12">Lenguaje de Señas</option>
+                                @foreach($actividades as $actividad)
+                                    <option value="{{ $actividad->id_act }}">{{ $actividad->nombre }}</option>
+                                @endforeach
                             </select>
                         </div>
 
-                        <div class="col-md-4 mb-3">
-                            <label>Tipo de usuario</label>
-                            <select class="form-control" name="id_tipo" required>
-                                <option value="">Selecciona tipo</option>
-                                <option value="1">Administrador</option>
-                                <option value="2">Usuario</option>
-                            </select>
-                        </div>
+                        {{-- El tipo de usuario se asigna automáticamente como Estudiante --}}
 
                         <div class="col-md-4 mb-3">
-                            <label>Password</label>
-                            <input type="password" class="form-control" name="password" required>
+                            <label>Contraseña</label>
+                            <input type="password" class="form-control @error('contrasena') is-invalid @enderror" name="contrasena" required>
+                            @error('contrasena')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                     </div>

@@ -49,10 +49,35 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="perfil" class="form-label fw-semibold">Perfil Profesional / Área</label>
-                            <input type="text" class="form-control" id="perfil" name="perfil" value="{{ old('perfil') }}" placeholder="Ej. Ingeniero en Sistemas / Programación">
-                            @error('perfil') <small class="text-danger">{{ $message }}</small> @enderror
+                        <div class="row mb-3">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label for="correo" class="form-label fw-semibold">Correo Institucional *</label>
+                                <input type="email" class="form-control" id="correo" name="correo" value="{{ old('correo') }}" placeholder="ejemplo@itssmt.edu.mx" required>
+                                @error('correo') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label for="contrasena" class="form-label fw-semibold">Contraseña de Acceso *</label>
+                                <input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Mínimo 8 caracteres" required>
+                                @error('contrasena') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-4">
+                                <label for="perfil" class="form-label fw-semibold">Perfil Profesional</label>
+                                <input type="text" class="form-control" id="perfil" name="perfil" value="{{ old('perfil') }}" placeholder="Ej. Ingeniero en Sistemas">
+                                @error('perfil') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <label for="telefono" class="form-label fw-semibold">Teléfono</label>
+                                <input type="text" class="form-control" id="telefono" name="telefono" value="{{ old('telefono') }}" placeholder="Ej. 5551234567">
+                                @error('telefono') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="area" class="form-label fw-semibold">Área Asignada</label>
+                                <input type="text" class="form-control" id="area" name="area" value="{{ old('area') }}" placeholder="Ej. Sistemas / Ciencias Básicas">
+                                @error('area') <small class="text-danger">{{ $message }}</small> @enderror
+                            </div>
                         </div>
 
                         <div class="mb-4">

@@ -26,8 +26,18 @@ class Docente extends Model
         'nombre',
         'apet',
         'amat',
+        'correo',
         'genero',
         'fotografia',
         'perfil',
+        'telefono',
+        'area',
+        'activo',
     ];
+
+    public function actividades()
+    {
+        return $this->belongsToMany(Actividad::class, 'imparte', 'no_empleado', 'id_actividad')
+                    ->withPivot('periodo');
+    }
 }

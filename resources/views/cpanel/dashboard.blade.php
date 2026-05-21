@@ -11,6 +11,11 @@
         position: relative;
         overflow: hidden;
         margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
     }
     .kpi-card .icon {
         position: absolute;
@@ -20,14 +25,15 @@
         opacity: 0.3;
     }
     .kpi-card h3 {
-        font-size: 2.5rem;
+        font-size: 2.3rem;
         font-weight: 700;
         margin: 0;
     }
     .kpi-card p {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         opacity: 0.9;
         margin-bottom: 0;
+        font-weight: 500;
     }
     .bg-gradient-1 { background: linear-gradient(45deg, #FF512F, #DD2476); }
     .bg-gradient-2 { background: linear-gradient(45deg, #1D976C, #93F9B9); color: #1a1a2e; }
@@ -36,8 +42,9 @@
     .bg-gradient-5 { background: linear-gradient(45deg, #FFB75E, #ED8F03); }
     .bg-gradient-6 { background: linear-gradient(45deg, #11998e, #38ef7d); }
     .bg-gradient-7 { background: linear-gradient(45deg, #8E2DE2, #4A00E0); }
+    .bg-gradient-red { background: linear-gradient(45deg, #ee0979, #ff6a00); }
 
-    .kpi-h3-small { font-size: 1.8rem !important; }
+    .kpi-h3-small { font-size: 1.7rem !important; }
     
     .chart-container {
         position: relative;
@@ -70,35 +77,89 @@
         font-size: 0.8rem;
         border-radius: 6px;
     }
+
+    .btn-teal {
+        background: linear-gradient(135deg, #386173, #1f364a) !important;
+        border: none !important;
+        color: white !important;
+    }
+    .btn-teal:hover {
+        background: linear-gradient(135deg, #1f364a, #152432) !important;
+        color: white !important;
+    }
+    .btn-teal.active {
+        background: linear-gradient(135deg, #B8D67A, #8fb34d) !important;
+        color: #1f364a !important;
+    }
+    .shadow-inner {
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="container-fluid mt-3" id="dashboard-content">
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="border-radius: 16px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.4);">
+                <div class="card-body d-flex flex-md-row flex-column justify-content-between align-items-center gap-3 py-3">
+                    <div>
+                        <h4 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                            <i class="mdi mdi-chart-box-multiple-outline" style="color: #386173; font-size: 1.8rem;"></i>
+                            Estadísticas de Actividades Extraescolares
+                        </h4>
+                        <p class="text-muted mb-0">Estás visualizando: <strong style="color: #386173;">{{ $periodoSeleccionado }}</strong></p>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-2 p-1 bg-light shadow-inner" style="border-radius: 12px;">
+                        @foreach($periodosConAlumnos as $p)
+                        <a href="{{ route('resumen', ['periodo' => $p->generacion]) }}"
+                           class="btn px-3 py-2 fw-bold text-decoration-none d-flex align-items-center gap-1 {{ $periodoSeleccionado == $p->generacion ? 'btn-teal active shadow-sm' : 'text-muted' }}"
+                           style="border-radius: 10px; transition: all 0.3s ease; font-size: 0.85rem;">
+                            <i class="mdi mdi-calendar-month-outline"></i>
+                            {{ $p->generacion }}
+                            <span class="badge {{ $periodoSeleccionado == $p->generacion ? 'bg-white text-dark' : 'bg-secondary' }} ms-1" style="font-size: 0.7rem;">{{ $p->total }}</span>
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    <!-- KPIs -->
     <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="kpi-card bg-gradient-1 shadow-sm">
                 <i class="mdi mdi-account-multiple icon"></i>
-                <p>Total Usuarios</p>
+                <p>Alumnos en Periodo</p>
                 <h3>{{ $totalUsuarios }}</h3>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
             <div class="kpi-card bg-gradient-2 shadow-sm">
-                <i class="mdi mdi-calendar-check icon" style="color: #1a1a2e;"></i>
-                <p style="color: #1a1a2e;">Total Actividades</p>
-                <h3 style="color: #1a1a2e;">{{ $totalActividades }}</h3>
+                <i class="mdi mdi-check-circle-outline icon" style="color: #1a1a2e;"></i>
+                <p style="color: #1a1a2e;">Alumnos Aprobados</p>
+                <h3 style="color: #1a1a2e;">{{ $totalAprobados }}</h3>
             </div>
         </div>
         <div class="col-md-3 col-sm-6">
             <div class="kpi-card bg-gradient-3 shadow-sm">
-                <i class="mdi mdi-account-star icon"></i>
-                <p>Tipos de Usuario</p>
-                <h3>{{ $totalTipos }}</h3>
+                <i class="mdi mdi-clock-outline icon"></i>
+                <p>Alumnos Cursando</p>
+                <h3>{{ $totalCursando }}</h3>
             </div>
         </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="kpi-card bg-gradient-red shadow-sm">
+                <i class="mdi mdi-alert-circle-outline icon"></i>
+                <p>Alumnos Reprobados</p>
+                <h3>{{ $totalReprobados }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="kpi-card bg-gradient-4 shadow-sm">
                 <i class="mdi mdi-gender-male-female icon"></i>
@@ -106,43 +167,34 @@
                 <h3>{{ $generoPred->genero ?? 'N/A' }}</h3>
             </div>
         </div>
-    </div>
-
-    <!-- KPIs Row 2 -->
-    <div class="row">
-        <!-- Turno Mayoritario -->
-        <div class="col-md-4 col-sm-6">
-            <div class="kpi-card bg-gradient-5 shadow-sm">
-                <i class="mdi mdi-weather-sunny icon"></i>
-                <p>Turno Mayoritario</p>
-                <h3>{{ $turnoPred->turno ?? 'N/A' }}</h3>
+        <div class="col-md-3 col-sm-6">
+            <div class="kpi-card bg-gradient-5 shadow-sm" style="color: #1a1a2e;">
+                <i class="mdi mdi-weather-sunny icon" style="color: #1a1a2e;"></i>
+                <p style="color: #1a1a2e;">Turno Mayoritario</p>
+                <h3 style="color: #1a1a2e;">{{ $turnoPred->turno ?? 'N/A' }}</h3>
             </div>
         </div>
-        <!-- Actividad Mayoritaria -->
-        <div class="col-md-4 col-sm-6">
-            <div class="kpi-card bg-gradient-6 shadow-sm">
-                <i class="mdi mdi-trophy icon"></i>
-                <p>Actividad Más Popular</p>
-                <h3 class="kpi-h3-small">{{ Str::limit($actividadPred->actividad_extraescolar ?? 'N/A', 15) }}</h3>
+        <div class="col-md-3 col-sm-6">
+            <div class="kpi-card bg-gradient-6 shadow-sm" style="color: #1a1a2e;">
+                <i class="mdi mdi-trophy icon" style="color: #1a1a2e;"></i>
+                <p style="color: #1a1a2e;">Actividad Popular</p>
+                <h3 class="kpi-h3-small" style="color: #1a1a2e;">{{ Str::limit($actividadPred->actividad_extraescolar ?? 'N/A', 13) }}</h3>
             </div>
         </div>
-        <!-- Carrera Mayoritaria -->
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-3 col-sm-6">
             <div class="kpi-card bg-gradient-7 shadow-sm">
                 <i class="mdi mdi-school icon"></i>
                 <p>Carrera Mayoritaria</p>
-                <h3 class="kpi-h3-small">{{ Str::limit($carreraPred->carrera ?? 'N/A', 15) }}</h3>
+                <h3 class="kpi-h3-small">{{ Str::limit($carreraPred->carrera ?? 'N/A', 13) }}</h3>
             </div>
         </div>
     </div>
 
-    <!-- Charts Row 1 -->
     <div class="row">
-        <!-- Usuarios por Carrera -->
-        <div class="col-lg-6">
+        <div class="col-lg-8">
             <div class="card card-chart" id="cardChartCarrera">
                 <div class="card-header">
-                    <h5 class="card-title">Usuarios por Carrera</h5>
+                    <h5 class="card-title">Estudiantes por Carrera - Periodo {{ $periodoSeleccionado }}</h5>
                     <button class="btn btn-outline-danger btn-pdf" id="btnPdfCarrera">
                         <i class="mdi mdi-file-pdf-box me-1"></i> PDF
                     </button>
@@ -155,11 +207,28 @@
             </div>
         </div>
 
-        <!-- Usuarios por Generación -->
+        <div class="col-lg-4">
+            <div class="card card-chart" id="cardChartEstado">
+                <div class="card-header">
+                    <h5 class="card-title">Distribución de Estados</h5>
+                    <button class="btn btn-outline-danger btn-pdf" id="btnPdfEstado">
+                        <i class="mdi mdi-file-pdf-box"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="chartEstado"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-lg-6">
             <div class="card card-chart" id="cardChartGeneracion">
                 <div class="card-header">
-                    <h5 class="card-title">Usuarios por Generación</h5>
+                    <h5 class="card-title">Estudiantes por Generación - Periodo {{ $periodoSeleccionado }}</h5>
                     <button class="btn btn-outline-danger btn-pdf" id="btnPdfGeneracion">
                         <i class="mdi mdi-file-pdf-box me-1"></i> PDF
                     </button>
@@ -171,15 +240,29 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-6">
+            <div class="card card-chart" id="cardChartActividad">
+                <div class="card-header">
+                    <h5 class="card-title">Estudiantes por Actividad Extraescolar</h5>
+                    <button class="btn btn-outline-danger btn-pdf" id="btnPdfActividad">
+                        <i class="mdi mdi-file-pdf-box me-1"></i> PDF
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="chartActividad"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Charts Row 2 -->
     <div class="row">
-        <!-- Usuarios por Género -->
         <div class="col-md-4">
             <div class="card card-chart" id="cardChartGenero">
                 <div class="card-header">
-                    <h5 class="card-title">Usuarios por Género</h5>
+                    <h5 class="card-title">Estudiantes por Género</h5>
                     <button class="btn btn-outline-danger btn-pdf" id="btnPdfGenero">
                         <i class="mdi mdi-file-pdf-box"></i>
                     </button>
@@ -192,11 +275,10 @@
             </div>
         </div>
 
-        <!-- Usuarios por Turno -->
         <div class="col-md-4">
             <div class="card card-chart" id="cardChartTurno">
                 <div class="card-header">
-                    <h5 class="card-title">Usuarios por Turno</h5>
+                    <h5 class="card-title">Estudiantes por Turno</h5>
                     <button class="btn btn-outline-danger btn-pdf" id="btnPdfTurno">
                         <i class="mdi mdi-file-pdf-box"></i>
                     </button>
@@ -209,7 +291,6 @@
             </div>
         </div>
 
-        <!-- Usuarios por Tipo -->
         <div class="col-md-4">
             <div class="card card-chart" id="cardChartTipo">
                 <div class="card-header">
@@ -227,33 +308,11 @@
         </div>
     </div>
 
-    <!-- Charts Row 3 -->
-    <div class="row">
-        <!-- Actividades más populares -->
-        <div class="col-12">
-            <div class="card card-chart" id="cardChartActividad">
-                <div class="card-header">
-                    <h5 class="card-title">Usuarios por Actividad Extraescolar</h5>
-                    <button class="btn btn-outline-danger btn-pdf" id="btnPdfActividad">
-                        <i class="mdi mdi-file-pdf-box me-1"></i> PDF
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="chart-container" style="height: 350px;">
-                        <canvas id="chartActividad"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 @endsection
 
 @push('scripts')
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- html2canvas and jsPDF for PDF export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -423,9 +482,35 @@
         generarPDFConTabla('cardChartActividad', 'Top Actividades Extraescolares', formattedDataActividad, ['Actividad', 'Total de Usuarios'], ['act', 'total']);
     };
 
+    // 7. Gráfica: Distribución de Estados (Doughnut)
+    const dataEstado = @json($porEstado);
+    new Chart(document.getElementById('chartEstado'), {
+        type: 'doughnut',
+        data: {
+            labels: dataEstado.map(d => d.estado),
+            datasets: [{
+                data: dataEstado.map(d => d.total),
+                backgroundColor: [
+                    'rgba(29, 151, 108, 0.8)',   // Verde
+                    'rgba(79, 172, 254, 0.8)',   // Azul
+                    'rgba(255, 81, 47, 0.8)'     // Rojo
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: { legend: { position: 'bottom' } }
+        }
+    });
+    document.getElementById('btnPdfEstado').onclick = () => {
+        generarPDFConTabla('cardChartEstado', 'Distribucion de Estados', dataEstado, ['Estado', 'Total de Alumnos'], ['estado', 'total']);
+    };
+
     // Función para generar PDF con Tabla e Imagen
     function generarPDFConTabla(elementId, filename, data, headers, keys) {
-        // Encontrar el contenedor de la gráfica
         const element = document.getElementById(elementId);
         
         // Ocultar el botón temporalmente
@@ -443,7 +528,6 @@
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
                 const { jsPDF } = window.jspdf;
                 
-                // Siempre generamos en 'p' (Portrait) para acomodar tabla e imagen
                 const doc = new jsPDF('p', 'mm', 'a4');
                 const pw = doc.internal.pageSize.getWidth();
                 const ph = doc.internal.pageSize.getHeight();
@@ -451,7 +535,7 @@
                 // --- 1. TÍTULO Y FECHA ---
                 doc.setFontSize(16);
                 doc.setTextColor(40);
-                doc.text("Reporte: " + filename, 14, 20);
+                doc.text("Reporte: " + filename + " - Periodo " + "{{ $periodoSeleccionado }}", 14, 20);
                 
                 doc.setFontSize(10);
                 doc.setTextColor(100);
@@ -466,34 +550,29 @@
                     head: [headers],
                     body: tableData,
                     theme: 'striped',
-                    headStyles: { fillColor: [220, 53, 69] }, // Rojo (danger)
+                    headStyles: { fillColor: [56, 97, 115] }, // Azul (teal) del ITSSMT
                     styles: { fontSize: 11, cellPadding: 3 }
                 });
                 
-                // Saber dónde terminó la tabla (coordenada Y)
                 let finalY = doc.lastAutoTable.finalY + 10;
                 
                 // --- 3. IMAGEN DE LA GRÁFICA ---
                 const imgW = canvas.width;
                 const imgH = canvas.height;
                 
-                // Calcular espacio disponible abajo de la tabla
                 const spaceLeft = ph - finalY - 15;
-                
-                // Escalar imagen para que encaje en el ancho, manteniendo proporciones
-                const w = pw - 28; // Márgenes laterales
+                const w = pw - 28; 
                 const h = (imgH * w) / imgW;
                 
-                // Si la imagen no cabe en el espacio que sobra, agregamos nueva hoja
                 if (h > spaceLeft) {
                     doc.addPage();
-                    finalY = 20; // Empezar arriba en la nueva hoja
+                    finalY = 20; 
                 }
                 
                 doc.addImage(imgData, 'JPEG', 14, finalY, w, h);
                 
                 // Guardar PDF
-                doc.save(filename.replace(/ /g, '_') + '.pdf');
+                doc.save(filename.replace(/ /g, '_') + '_Periodo_' + "{{ $periodoSeleccionado }}" + '.pdf');
                 
             }).catch(err => {
                 console.error("Error al generar PDF: ", err);

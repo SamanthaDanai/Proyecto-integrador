@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Usuario;
 
 class PerfilController extends Controller
@@ -31,7 +32,7 @@ class PerfilController extends Controller
             $filename = 'perfil_' . $user->num_control . '_' . time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('perfiles', $filename, 'public');
 
-            Usuario::where('num_control', $user->num_control)->update([
+            $user->update([
                 'fotografia_perfil' => $filename
             ]);
         }
@@ -42,9 +43,16 @@ class PerfilController extends Controller
     public function actualizarDatos(Request $request)
     {
         $user = Auth::user();
+
+        // Si el usuario es Estudiante (id_tipo == 2), no le permitimos editar datos personales
+        if ($user->id_tipo == 2) {
+            return back()->withErrors(['error' => 'Como estudiante, solo puedes actualizar tu fotografía de perfil.']);
+        }
         
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'telefono' => 'nullable|string|max:20',
+            'area' => 'nullable|string|max:255',
         ]);
 
         $updateData = ['nombre' => $request->nombre];
@@ -57,10 +65,22 @@ class PerfilController extends Controller
                 'nueva_contrasena.regex' => 'La contraseña debe tener 8 letras, 1 número y 1 símbolo especial.'
             ]);
 
-            $updateData['contrasena'] = $request->nueva_contrasena;
+            $updateData['contrasena'] = Hash::make($request->nueva_contrasena);
         }
+        
+        $user->update($updateData);
 
-        Usuario::where('num_control', $user->num_control)->update($updateData);
+        // Si es Docente (id_tipo == 4), actualizamos también su tabla de docente
+        if ($user->id_tipo == 4) {
+            $docente = $user->docente;
+            if ($docente) {
+                $docente->update([
+                    'nombre' => $request->nombre, // Sincronizamos nombre
+                    'telefono' => $request->telefono,
+                    'area' => $request->area
+                ]);
+            }
+        }
 
         return back()->with('success', 'Datos actualizados correctamente.');
     }

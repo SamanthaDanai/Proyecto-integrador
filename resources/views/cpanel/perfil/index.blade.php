@@ -1,98 +1,216 @@
 @extends('cpanel.plantilla')
 
+@section('title', 'Mi Perfil')
+@section('page_title', 'PERFIL')
+
+@push('styles')
+<style>
+    body {
+        background-color: #f1f5f9 !important;
+        color: #1e293b !important;
+        font-size: 1.1rem !important;
+    }
+
+    .profile-banner {
+        background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-teal) 100%);
+        height: 200px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        padding-left: 3rem;
+        margin-bottom: -100px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .main-container {
+        padding-top: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .profile-card {
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 3rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: none;
+    }
+
+    .avatar-large {
+        width: 180px;
+        height: 180px;
+        border-radius: 40px;
+        object-fit: cover;
+        border: 6px solid #ffffff;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        background: #f1f5f9;
+    }
+
+    .edit-photo-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: var(--color-green);
+        color: var(--color-navy);
+        width: 45px;
+        height: 45px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 4px solid #ffffff;
+        transition: all 0.3s ease;
+    }
+    .edit-photo-btn:hover { transform: scale(1.1); background: #fff; }
+
+    .custom-label {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 0.8rem;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .custom-input {
+        background: #f8fafc;
+        border: 2px solid #f1f5f9;
+        border-radius: 18px;
+        padding: 1.1rem 1.4rem;
+        color: var(--color-navy);
+        font-weight: 600;
+        font-size: 1.2rem; /* Input grande */
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    .custom-input:focus {
+        background: #ffffff;
+        border-color: var(--color-teal);
+        box-shadow: 0 0 0 5px rgba(56, 97, 115, 0.1);
+        outline: none;
+    }
+    .custom-input[readonly] { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--color-navy);
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .section-title i { color: var(--color-teal); font-size: 2.2rem; }
+
+    .btn-save-lg {
+        background: var(--color-green);
+        color: var(--color-navy);
+        padding: 1.2rem 3rem;
+        border-radius: 20px;
+        font-weight: 800;
+        font-size: 1.2rem;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.3s ease;
+    }
+    .btn-save-lg:hover { filter: brightness(1.05); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+</style>
+@endpush
+
 @section('content')
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden; background: white;">
-            <div class="card-body text-center p-4">
-                <h5 class="fw-bold mb-4" style="color: var(--color-navy);">Fotografía de Perfil</h5>
-                
-                <div class="mb-3">
-                    @if(Auth::user()->fotografia_perfil)
-                        <img src="{{ Storage::url('perfiles/' . Auth::user()->fotografia_perfil) }}" alt="Foto de perfil" class="rounded-circle object-fit-cover shadow-sm" style="width: 150px; height: 150px; border: 4px solid var(--color-green);">
-                    @else
-                        <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto shadow-sm" style="width: 150px; height: 150px; background: #e2e8f0; border: 4px solid var(--color-green);">
-                            <i class="mdi mdi-account text-secondary" style="font-size: 5rem;"></i>
-                        </div>
-                    @endif
-                </div>
-
-                <form action="{{ route('perfil.foto') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="mb-3 text-start">
-                        <label class="form-label small fw-bold text-muted">Cambiar Fotografía</label>
-                        <input class="form-control form-control-sm" type="file" name="fotografia" accept=".jpg,.jpeg,.png,.webp" required>
-                    </div>
-                    <button type="submit" class="btn w-100 fw-bold text-white shadow-sm" style="background-color: var(--color-teal); border-radius: 8px;">
-                        <i class="mdi mdi-upload me-2"></i> Subir y Actualizar
-                    </button>
-                </form>
-
-            </div>
-        </div>
+<div class="container-fluid py-4">
+    
+    <div class="profile-banner">
+        <h1 class="text-white fw-bold mb-0" style="font-size: 2.5rem;">Configuración de mi Cuenta</h1>
     </div>
 
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm" style="border-radius: 12px; background: white;">
-            <div class="card-body p-4">
-                <h5 class="fw-bold mb-4" style="color: var(--color-navy);">Datos Personales</h5>
-
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show py-2" role="alert" style="border-radius: 8px;">
-                        <i class="mdi mdi-check-circle me-2"></i> {{ session('success') }}
-                        <button type="button" class="btn-close pb-2" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-                @if($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="border-radius: 8px;">
-                        <ul class="mb-0">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                <form action="{{ route('perfil.datos') }}" method="POST">
-                    @csrf
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label text-muted fw-bold small">Número de Control</label>
-                            <input type="text" class="form-control border-0 bg-light" value="{{ Auth::user()->num_control }}" readonly>
+    <div class="container main-container">
+        <div class="row g-5">
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="profile-card text-center">
+                    <form action="{{ route('perfil.foto') }}" method="POST" enctype="multipart/form-data" id="form-foto">
+                        @csrf
+                        <div class="position-relative d-inline-block mb-4">
+                            @if(Auth::user()->fotografia_perfil)
+                                <img src="{{ Storage::url('perfiles/' . Auth::user()->fotografia_perfil) }}" class="avatar-large">
+                            @else
+                                <img src="{{ asset('assets/images/faces/face28.png') }}" class="avatar-large">
+                            @endif
+                            <label for="input-foto" class="edit-photo-btn shadow">
+                                <i class="mdi mdi-camera fs-4"></i>
+                            </label>
+                            <input type="file" id="input-foto" name="fotografia" hidden onchange="document.getElementById('form-foto').submit()">
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted fw-bold small">Correo Institucional</label>
-                            <input type="text" class="form-control border-0 bg-light" value="{{ Auth::user()->correo_inst }}" readonly>
-                        </div>
-                    </div>
+                    </form>
 
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <label class="form-label text-muted fw-bold small">Nombre(s) y Apellidos</label>
-                            <input type="text" class="form-control" name="nombre" value="{{ Auth::user()->nombre }}" required>
-                        </div>
-                    </div>
+                    <h2 class="fw-bold mb-2" style="color: var(--color-navy);">{{ Auth::user()->nombre }}</h2>
+                    <p class="fs-5 text-teal fw-bold mb-4">{{ Auth::user()->tipo->descripcion }}</p>
                     
-                    <hr class="my-4" style="border-color: #e2e8f0;">
-
-                    <h6 class="fw-bold mb-3" style="color: var(--color-teal);">Seguridad: Cambiar Contraseña</h6>
-                    <p class="text-muted small mb-3">Dejar en blanco si deseas mantener tu contraseña actual.</p>
-                    
-                    <div class="mb-4">
-                        <label class="form-label text-muted fw-bold small">Nueva Contraseña</label>
-                        <input type="password" class="form-control" name="nueva_contrasena" placeholder="Escribe aquí tu nueva contraseña" pattern="^[a-zA-Z]{8}[0-9]{1}[\W_]{1}$" title="Debe tener 8 letras, 1 número y 1 carácter especial (ej. Password1!)">
-                        <div class="form-text text-danger" style="font-size: 0.8rem;"><i class="mdi mdi-information-outline"></i> Formato Obligatorio: 8 Letras, 1 Número, 1 Símbolo Especial.</div>
+                    <div class="text-start p-4 bg-light rounded-4">
+                        <div class="mb-3"><i class="mdi mdi-identifier text-teal me-2"></i> <b>N° Control:</b> <span class="fs-5">{{ Auth::user()->num_control }}</span></div>
+                        <div><i class="mdi mdi-email text-teal me-2"></i> <b>Correo:</b> <div class="text-truncate small">{{ Auth::user()->correo_inst }}</div></div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="text-end mt-4">
-                        <button type="submit" class="btn fw-bold text-dark px-4 shadow-sm border-0" style="background-color: var(--color-green); border-radius: 8px;">
-                            <i class="mdi mdi-content-save me-2"></i> Guardar Cambios
-                        </button>
-                    </div>
-                </form>
+            <!-- Form -->
+            <div class="col-lg-8">
+                <div class="profile-card">
+                    @if(session('success'))
+                        <div class="alert alert-success p-3 rounded-4 mb-5 fw-bold">
+                            <i class="mdi mdi-check-circle me-2"></i> {{ session('success') }}
+                        </div>
+                    @endif
 
+                    <form action="{{ route('perfil.datos') }}" method="POST">
+                        @csrf
+                        
+                        <h4 class="section-title"><i class="mdi mdi-account-details-outline"></i> Información Personal</h4>
+                        
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="custom-label">Nombre y Apellidos</label>
+                                <input type="text" class="custom-input" name="nombre" value="{{ Auth::user()->nombre }}" required {{ Auth::user()->id_tipo == 2 ? 'readonly' : '' }}>
+                            </div>
+
+                            @if(Auth::user()->id_tipo == 4)
+                            <div class="col-md-6">
+                                <label class="custom-label">Teléfono de Contacto</label>
+                                <input type="text" class="custom-input" name="telefono" value="{{ Auth::user()->docente->telefono ?? '' }}" placeholder="Ej. 248 123 4567">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="custom-label">Área Académica</label>
+                                <input type="text" class="custom-input" name="area" value="{{ Auth::user()->docente->area ?? '' }}" placeholder="Ej. Sistemas">
+                            </div>
+                            @endif
+                        </div>
+
+                        @if(Auth::user()->id_tipo != 2)
+                        <h4 class="section-title mt-5"><i class="mdi mdi-shield-key-outline"></i> Seguridad</h4>
+                        
+                        <div class="mb-5">
+                            <label class="custom-label">Cambiar Contraseña</label>
+                            <input type="password" class="custom-input" name="nueva_contrasena" placeholder="Escribe aquí tu nueva clave">
+                            <div class="form-text text-muted mt-2 fs-6">Deja el campo vacío si no deseas cambiar tu contraseña actual.</div>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn-save-lg shadow">
+                                <i class="mdi mdi-content-save-check"></i> Guardar Todos los Cambios
+                            </button>
+                        </div>
+                        @else
+                        <div class="mt-5 p-4 bg-light rounded-4 border-start border-4 border-teal text-muted">
+                            <i class="mdi mdi-information me-2 fs-5"></i> Los datos de acceso de los estudiantes son administrados centralmente por la institución.
+                        </div>
+                        @endif
+                    </form>
+                </div>
             </div>
         </div>
     </div>

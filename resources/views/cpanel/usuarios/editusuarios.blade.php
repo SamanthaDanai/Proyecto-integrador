@@ -19,7 +19,10 @@
 
                         <div class="col-md-6 mb-3">
                             <label>Número de control</label>
-                            <input type="text" class="form-control" name="num_control" value="{{ $usuario->num_control }}" required>
+                            <input type="text" class="form-control @error('num_control') is-invalid @enderror" name="num_control" value="{{ old('num_control', $usuario->num_control) }}" required>
+                            @error('num_control')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
@@ -57,55 +60,54 @@
 
                         <div class="col-md-4 mb-3">
                             <label>Correo institucional</label>
-                            <input type="email" class="form-control" name="correo_inst" value="{{ $usuario->correo_inst }}" required>
+                            <input type="email" class="form-control @error('correo_inst') is-invalid @enderror" name="correo_inst" value="{{ old('correo_inst', $usuario->correo_inst) }}" pattern="^[A-Za-z][0-9]{8}@smartin\.tecnm\.mx$" title="El correo debe tener el formato: una letra, 8 números y @smartin.tecnm.mx (ej. l22240029@smartin.tecnm.mx)" required>
+                            @error('correo_inst')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label>Carrera</label>
                             <select class="form-select" name="carrera" required>
                                 <option value="">Selecciona carrera</option>
-                                <option value="ISC" {{ $usuario->carrera == 'ISC' ? 'selected' : '' }}>ISC</option>
-                                <option value="Electromecánica" {{ $usuario->carrera == 'Electromecánica' ? 'selected' : '' }}>Electromecánica</option>
-                                <option value="Industrial" {{ $usuario->carrera == 'Industrial' ? 'selected' : '' }}>Industrial</option>
-                                <option value="IGE" {{ $usuario->carrera == 'IGE' ? 'selected' : '' }}>IGE</option>
-                                <option value="Ambiental" {{ $usuario->carrera == 'Ambiental' ? 'selected' : '' }}>Ambiental</option>
-                                <option value="Contador" {{ $usuario->carrera == 'Contador' ? 'selected' : '' }}>Contador</option>
-                                <option value="Turismo" {{ $usuario->carrera == 'Turismo' ? 'selected' : '' }}>Turismo</option>
+                                @foreach($carreras as $carrera)
+                                    <option value="{{ $carrera->nombre_carrera }}" {{ $usuario->carrera == $carrera->nombre_carrera ? 'selected' : '' }}>
+                                        {{ $carrera->nombre_carrera }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label>Generación</label>
-                            <input type="text" class="form-control" name="generacion" value="{{ $usuario->generacion }}">
+                            <label class="form-label fw-semibold">Periodo Académico *</label>
+                            <select class="form-select" name="generacion" required>
+                                <option value="">Selecciona Periodo Académico</option>
+                                <optgroup label="Periodo 1 (Enero - Junio)">
+                                    <option value="Enero-junio 2025" {{ old('generacion', $usuario->generacion) == 'Enero-junio 2025' ? 'selected' : '' }}>Enero - Junio 2025</option>
+                                    <option value="Enero-junio 2026" {{ old('generacion', $usuario->generacion) == 'Enero-junio 2026' ? 'selected' : '' }}>Enero - Junio 2026</option>
+                                    <option value="Enero-junio 2027" {{ old('generacion', $usuario->generacion) == 'Enero-junio 2027' ? 'selected' : '' }}>Enero - Junio 2027</option>
+                                </optgroup>
+                                <optgroup label="Periodo 2 (Agosto - Diciembre)">
+                                    <option value="Agosto-diciembre 2024" {{ old('generacion', $usuario->generacion) == 'Agosto-diciembre 2024' ? 'selected' : '' }}>Agosto - Diciembre 2024</option>
+                                    <option value="Agosto-diciembre 2025" {{ old('generacion', $usuario->generacion) == 'Agosto-diciembre 2025' ? 'selected' : '' }}>Agosto - Diciembre 2025</option>
+                                    <option value="Agosto-diciembre 2026" {{ old('generacion', $usuario->generacion) == 'Agosto-diciembre 2026' ? 'selected' : '' }}>Agosto - Diciembre 2026</option>
+                                </optgroup>
+                            </select>
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label>Actividad extraescolar</label>
                             <select class="form-select" name="actividad_extraescolar">
                                 <option value="">Selecciona actividad</option>
-                                <option value="1" {{ $usuario->actividad_extraescolar == 1 ? 'selected' : '' }}>Escolta</option>
-                                <option value="2" {{ $usuario->actividad_extraescolar == 2 ? 'selected' : '' }}>Banderolas</option>
-                                <option value="3" {{ $usuario->actividad_extraescolar == 3 ? 'selected' : '' }}>Danza folclórica</option>
-                                <option value="4" {{ $usuario->actividad_extraescolar == 4 ? 'selected' : '' }}>Bailes latinos</option>
-                                <option value="5" {{ $usuario->actividad_extraescolar == 5 ? 'selected' : '' }}>Rondalla</option>
-                                <option value="6" {{ $usuario->actividad_extraescolar == 6 ? 'selected' : '' }}>Arcilla</option>
-                                <option value="7" {{ $usuario->actividad_extraescolar == 7 ? 'selected' : '' }}>Basquetbol</option>
-                                <option value="8" {{ $usuario->actividad_extraescolar == 8 ? 'selected' : '' }}>Futbol</option>
-                                <option value="9" {{ $usuario->actividad_extraescolar == 9 ? 'selected' : '' }}>Atletismo</option>
-                                <option value="10" {{ $usuario->actividad_extraescolar == 10 ? 'selected' : '' }}>Volibol</option>
-                                <option value="11" {{ $usuario->actividad_extraescolar == 11 ? 'selected' : '' }}>Beisbol</option>
-                                <option value="12" {{ $usuario->actividad_extraescolar == 12 ? 'selected' : '' }}>Lenguaje de Señas</option>
+                                @foreach($actividades as $actividad)
+                                    <option value="{{ $actividad->id_act }}" {{ $usuario->actividad_extraescolar == $actividad->id_act ? 'selected' : '' }}>
+                                        {{ $actividad->nombre }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 
-                        <div class="col-md-4 mb-3">
-                            <label>Tipo de usuario</label>
-                            <select class="form-control" name="id_tipo" required>
-                                <option value="">Selecciona tipo</option>
-                                <option value="1" {{ $usuario->id_tipo == 1 ? 'selected' : '' }}>Administrador</option>
-                                <option value="2" {{ $usuario->id_tipo == 2 ? 'selected' : '' }}>Usuario</option>
-                            </select>
-                        </div>
+                        {{-- El tipo de usuario se mantiene automáticamente como Estudiante --}}
 
                         <div class="col-md-4 mb-3">
                             <label>Nueva contraseña (dejar vacío para mantener la actual)</label>

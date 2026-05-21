@@ -184,10 +184,22 @@
                     <!-- Tipo usuario -->
                     <input type="hidden" name="id_tipo" value="Estudiante">
 
-                    <!-- Generación -->
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" name="generacion" placeholder="2022-2026" required>
-                        <label>Generación</label>
+                    <!-- Periodo Académico -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-muted">Periodo Académico *</label>
+                        <select class="form-select" name="generacion" required>
+                            <option value="">Selecciona Periodo Académico</option>
+                            <optgroup label="Periodo 1 (Enero - Junio)">
+                                <option value="Enero-junio 2025">Enero - Junio 2025</option>
+                                <option value="Enero-junio 2026">Enero - Junio 2026</option>
+                                <option value="Enero-junio 2027">Enero - Junio 2027</option>
+                            </optgroup>
+                            <optgroup label="Periodo 2 (Agosto - Diciembre)">
+                                <option value="Agosto-diciembre 2024">Agosto - Diciembre 2024</option>
+                                <option value="Agosto-diciembre 2025">Agosto - Diciembre 2025</option>
+                                <option value="Agosto-diciembre 2026">Agosto - Diciembre 2026</option>
+                            </optgroup>
+                        </select>
                     </div>
 
                     <button class="btn btn-primary" type="submit">Guardar</button>

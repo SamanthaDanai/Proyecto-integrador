@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory;
 
     protected $table = 'usuario'; // tu tabla real en la BD
 
@@ -27,7 +28,12 @@ class Usuario extends Authenticatable
         'generacion',
         'actividad_extraescolar',
         'id_tipo',
-        'contrasena'
+        'contrasena',
+        'fotografia_perfil'
+    ];
+
+    protected $hidden = [
+        'contrasena',
     ];
 
     public function tipo()
@@ -38,6 +44,22 @@ class Usuario extends Authenticatable
     public function actividad()
     {
         return $this->belongsTo(ActExtraescolar::class, 'actividad_extraescolar', 'id_act');
+    }
+
+    public function historial_extraescolar()
+    {
+        return $this->hasMany(HistorialExtraescolar::class, 'num_control', 'num_control');
+    }
+
+    public function actividades()
+    {
+        return $this->belongsToMany(Actividad::class, 'inscribe', 'num_control', 'id_actividad')
+                    ->withPivot('periodo', 'calificacion', 'obs');
+    }
+
+    public function docente()
+    {
+        return $this->hasOne(Docente::class, 'no_empleado', 'num_control');
     }
 
     public function getAuthPassword()
